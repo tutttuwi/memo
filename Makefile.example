@@ -1,0 +1,29 @@
+.PHONY: help build deploy all
+
+# デプロイID を設定してください
+DEPLOYMENT_ID := <deployid>
+
+# ヘルプ表示
+help:
+	@echo "利用可能なコマンド:"
+	@echo "  make build   - フロントエンドをビルド（gas/ディレクトリに出力）"
+	@echo "  make deploy  - GASにデプロイ（clasp push + clasp deploy）"
+	@echo "  make all     - ビルドからデプロイまで一括実行"
+	@echo "  make help    - このヘルプを表示"
+
+# フロントエンドのビルド
+build:
+	@echo "フロントエンドをビルド中..."
+	cd frontend && npm run build
+	@echo "ビルド完了: gas/ ディレクトリに出力されました"
+
+# GASへのデプロイ
+deploy:
+	@echo "GASにデプロイ中..."
+	clasp push
+	clasp deploy --deploymentId $(DEPLOYMENT_ID)
+	@echo "デプロイ完了"
+
+# ビルドからデプロイまで一括実行
+all: build deploy
+	@echo "すべての処理が完了しました"

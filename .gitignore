@@ -131,9 +131,21 @@ dist
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
-!.yarn/sdks
 !.yarn/versions
 
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# GAS (Google Apps Script) related files
+.clasp.json
+gas/.clasp.json
+.clasprc.json
+
+# Build output (except index.html which is needed for GAS)
+gas/assets/
+gas/vite.svg
+gas/index.html
+
+# Makefile
+Makefile
