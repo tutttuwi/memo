@@ -1,0 +1,41 @@
+# Clasp ignore file for page project
+# このファイルに記載されたパターンは clasp push で除外されます
+
+# フロントエンドのソースコード
+frontend/
+frontend/**
+
+# 依存関係
+frontend/node_modules/
+frontend/node_modules/**
+
+# ビルド成果物（index.htmlは含める）
+frontend/dist/
+frontend/dist/**
+
+# 古いGASプロジェクト（参考用）
+gas/
+gas/**
+
+# assetsフォルダは除外（すべてindex.htmlにインライン化されているため）
+assets/
+assets/**
+
+# 設定ファイル
+../.gitignore
+../.claspignore
+../README.md
+../LICENSE
+../.clasp.json
+
+# サンプルファイル
+../sample/
+../sample/**
+
+# 他のプロジェクトフォルダ
+../api/
+../api/**
+
+# その他
+*.log
+.DS_Store

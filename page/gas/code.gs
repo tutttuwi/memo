@@ -27,6 +27,117 @@ function doGet() {
 }
 
 /**
+ * POSTリクエストのエントリーポイント
+ * スマホショートカットなどから呼び出されるAPI
+ * 
+ * リクエスト例:
+ * POST /exec
+ * {
+ *   "key": "your_secret_key",
+ *   "url": "https://example.com",
+ *   "title": "記事タイトル（任意）",
+ *   "comment": "コメント（任意）",
+ *   "owner": "username（任意、デフォルト設定を使用）",
+ *   "repo": "reponame（任意、デフォルト設定を使用）",
+ *   "path": "file.md（任意、デフォルト設定を使用）"
+ * }
+ */
+function doPost(e) {
+  try {
+    // リクエストデータの取得
+    let requestData;
+    if (e.postData && e.postData.contents) {
+      requestData = JSON.parse(e.postData.contents);
+    } else {
+      // URLパラメータからも取得可能（GET互換）
+      requestData = {
+        key: e.parameter.key,
+        url: e.parameter.url,
+        title: e.parameter.title,
+        comment: e.parameter.comment,
+        owner: e.parameter.owner,
+        repo: e.parameter.repo,
+        path: e.parameter.path
+      };
+    }
+    
+    // セキュリティキーの検証
+    const secretKey = PropertiesService.getScriptProperties().getProperty('API_SECRET_KEY');
+    if (secretKey && requestData.key !== secretKey) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        error: 'Invalid API key'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // URLは必須
+    if (!requestData.url) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        error: 'URL is required'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // デフォルト設定の取得
+    const defaultOwner = PropertiesService.getScriptProperties().getProperty('DEFAULT_OWNER');
+    const defaultRepo = PropertiesService.getScriptProperties().getProperty('DEFAULT_REPO');
+    const defaultPath = PropertiesService.getScriptProperties().getProperty('DEFAULT_PATH') || 'links.md';
+    
+    // リポジトリ情報の決定
+    const owner = requestData.owner || defaultOwner;
+    const repo = requestData.repo || defaultRepo;
+    const path = requestData.path || defaultPath;
+    
+    if (!owner || !repo) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        error: 'Repository information is required. Set DEFAULT_OWNER and DEFAULT_REPO in ScriptProperties, or provide owner and repo in the request.'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // コンテンツの生成
+    const now = new Date();
+    const formattedDate = Utilities.formatDate(now, 'Asia/Tokyo', 'yyyy-MM-dd HH:mm');
+    
+    let content = '';
+    
+    // タイトルがある場合は見出しとして追加
+    if (requestData.title) {
+      content += `## ${requestData.title}\n\n`;
+    }
+    
+    // URLを追加
+    content += `- [${requestData.url}](${requestData.url})\n`;
+    
+    // コメントがある場合は追加
+    if (requestData.comment) {
+      content += `  ${requestData.comment}\n`;
+    }
+    
+    // 日付を追加
+    content += `  - ${formattedDate}\n\n`;
+    
+    // ファイルに追記
+    const commitTitle = requestData.title || 'Add link from mobile';
+    updateFile(owner, repo, path, content, commitTitle);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: 'File updated successfully',
+      owner: owner,
+      repo: repo,
+      path: path
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message || 'Unknown error occurred'
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
  * GitHub APIのベースURL
  */
 const GITHUB_API_BASE = 'https://api.github.com';

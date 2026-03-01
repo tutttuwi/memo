@@ -1,0 +1,33 @@
+# Clasp ignore file for api project
+# このファイルに記載されたパターンは clasp push で除外されます
+
+# フロントエンドのソースコード（page配下に移動）
+../page/frontend/
+../page/frontend/**
+
+# 依存関係
+../page/frontend/node_modules/
+../page/frontend/node_modules/**
+
+# ビルド成果物
+../page/frontend/dist/
+../page/frontend/dist/**
+
+# 設定ファイル
+../.gitignore
+../.claspignore
+../README.md
+../LICENSE
+../.clasp.json
+
+# サンプルファイル
+../sample/
+../sample/**
+
+# 他のプロジェクトフォルダ
+../page/
+../page/**
+
+# その他
+*.log
+.DS_Store

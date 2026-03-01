@@ -1,22 +1,22 @@
 # Clasp ignore file
 # このファイルに記載されたパターンは clasp push で除外されます
 
-# フロントエンドのソースコード
-frontend/
-frontend/**
+# フロントエンドのソースコード（page配下に移動）
+page/frontend/
+page/frontend/**
 
 # 依存関係
-node_modules/
-node_modules/**
+page/frontend/node_modules/
+page/frontend/node_modules/**
 
 # ビルド成果物（index.htmlは含める）
-dist/
-dist/**
-!dist/index.html
+page/frontend/dist/
+page/frontend/dist/**
+!page/frontend/dist/index.html
 
 # assetsフォルダは除外（すべてindex.htmlにインライン化されているため）
-gas/assets/
-gas/assets/**
+page/gas/assets/
+page/gas/assets/**
 
 # 設定ファイル
 .gitignore
@@ -27,6 +27,12 @@ LICENSE
 # サンプルファイル
 sample/
 sample/**
+
+# プロジェクトフォルダ（各プロジェクトは独自の.claspignoreを使用）
+page/
+page/**
+api/
+api/**
 
 # その他
 *.log

@@ -139,13 +139,19 @@ vite.config.ts.timestamp-*
 
 # GAS (Google Apps Script) related files
 .clasp.json
-gas/.clasp.json
+page/.clasp.json
+api/.clasp.json
 .clasprc.json
 
 # Build output (except index.html which is needed for GAS)
-gas/assets/
-gas/vite.svg
-gas/index.html
+page/gas/assets/
+page/gas/vite.svg
+page/gas/index.html
+page/index.html
 
 # Makefile
 Makefile
+
+
+# sample
+sample.md
